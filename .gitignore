@@ -54,3 +54,7 @@ next-env.d.ts
 .anthropic/
 .prod-webhook-secret
 memory.md
+docs/PRD.md
+docs/TASKS.md
+docs/TEARDOWN-hex.md
+docs/DATAHUB_SETUP.md
