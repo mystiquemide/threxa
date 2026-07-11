@@ -6,11 +6,13 @@ The agent that stops data breaking changes before they merge.
 [![CodeQL](https://github.com/mystiquemide/threxa/actions/workflows/codeql.yml/badge.svg)](https://github.com/mystiquemide/threxa/actions/workflows/codeql.yml)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
-Someone renames a column in a dbt model, the PR looks harmless, it merges, and three days later the revenue dashboard is wrong. Impact analysis exists inside DataHub, but nobody opens the catalog during code review. Threxa closes that gap: it sits on the pull request, computes the downstream blast radius from DataHub lineage, and posts the verdict where the decision happens.
+A PR drops a column. Threxa walks your DataHub lineage, finds the 8 dashboards and tables that consume it, names their owners, posts BREAKING on the PR with a migration path, and writes the change into the catalog. Before the merge, not three days after.
 
-**Live:** [threxa dashboard](https://web-production-81ecf4.up.railway.app) &middot; [documentation](https://web-production-81ecf4.up.railway.app/docs) &middot; [get started](https://web-production-81ecf4.up.railway.app/get-started)
+![Blast radius of a breaking change](docs/assets/blast-radius.png)
 
-## What it does
+**Live:** [dashboard](https://web-production-81ecf4.up.railway.app/dashboard) &middot; [product site](https://web-production-81ecf4.up.railway.app) &middot; [docs](https://web-production-81ecf4.up.railway.app/docs) &middot; [get started](https://web-production-81ecf4.up.railway.app/get-started)
+
+## How a verdict happens
 
 1. A GitHub webhook fires when a PR touches SQL or dbt model files.
 2. An LLM parses the diff into structured change intents (columns dropped, renamed, retyped, logic changed).
@@ -18,6 +20,12 @@ Someone renames a column in a dbt model, the PR looks harmless, it merges, and t
 4. A deterministic scorer assigns SAFE, RISKY, or BREAKING. The LLM never decides severity, and missing lineage never yields SAFE.
 5. One PR comment carries the verdict: severity, impact table (asset, type, owner, hop, via-column), a plain-language explanation, and a migration path referencing real column names. BREAKING also sets a failing commit status.
 6. Every analysis writes a change record back to the touched DataHub entities. Merging a BREAKING PR raises incidents on the affected downstream assets. The catalog remembers.
+
+## Product
+
+| Run history | Product site |
+|---|---|
+| ![Run history dashboard](docs/assets/dashboard.png) | ![Landing page](docs/assets/landing.png) |
 
 ## Architecture
 
