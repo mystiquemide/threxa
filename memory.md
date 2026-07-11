@@ -32,7 +32,13 @@ ANTHROPIC_API_KEY, DATABASE_URL, DATAHUB_GMS_URL, DATAHUB_TOKEN, MCP_SERVER_URL,
 - PR comment upsert via `<!-- threxa -->` marker. (ADR-6)
 - No auth, public dashboard, HMAC-protected webhook only. (ADR-7)
 
-## ACTIVE WORK
+## ACTIVE WORK (design rebuild session)
+Groq swap done (src/lib/ai.ts, OpenAI-compatible, forced tool calls, key in .env, smoke-tested 200 + correct intent extraction). hex.tech teardown in docs/TEARDOWN-hex.md. Landing rebuilt hex-style: paper/dot-grid/hairline theme in globals.css, fonts Instrument Serif italic + Archivo + IBM Plex Mono, route group (marketing) with ticker/nav/hero/product-trio/context-arcs/stack-row/feature-rows/case-cards/faq/cta/footer, dashboard moved to its own dark layout. PENDING: delete src/app/page.tsx (route conflict with (marketing)/page.tsx) + build + /website-ux-audit — blocked mid-flight by permission classifier outage (Bash/PowerShell gated, file tools fine). Old features.tsx also to delete.
+
+## PREVIOUS ACTIVE WORK
+Audit fixes done and pushed (github.com/mystiquemide/threxa, 4 commits). Lineage client verified against live stack and rewritten: 1-hop BFS parallel calls, column-level lineage via get_lineage column arg, 24s for full blast radius. DataHub + showcase-ecommerce + MCP server all running locally in WSL (keep-alive holds VM; ~/.datahubenv sets timeout_sec 120; MCP server task bh4embsj9). Demo repo threxa-demo-pipeline committed locally in scratchpad with 3 scripted branches, BLOCKED on user approving `gh repo create` (public surface). Railway web service created with env vars, BLOCKED on user approving `railway up`. E2E BLOCKED on ANTHROPIC_API_KEY (user must supply). GITHUB_TOKEN wired from gh CLI.
+
+## OLD ACTIVE WORK
 DataHub plan final: local WSL2 quickstart (the hackathon's sanctioned path; no DataHub Cloud free trial exists, site is demo-gated; VPS too small). Docker was already installed in WSL Ubuntu, daemon now enabled via `wsl -u root systemctl enable --now docker`. DataHub CLI 1.6.0.13 in ~/datahub-venv. `datahub docker quickstart` downloading images in background. Next: `datahub datapack load showcase-ecommerce`, access token, Task 2 MCP verification (tool names in lineage.ts are unverified assumptions), Task 4 demo repo + webhook secret, Tasks 16/17 demo fixture. Judge story: PR comments persist statically, Railway dashboard reads Postgres, README reproduction = quickstart. Chrome extension has no localhost permission; visual checks via Invoke-WebRequest.
 
 ## COMPLETED

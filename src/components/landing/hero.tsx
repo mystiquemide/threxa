@@ -1,29 +1,45 @@
-import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { Reveal } from "./reveal"
 
 export function Hero() {
   return (
-    <section className="relative pt-32 pb-20 px-4">
-      <div className="mx-auto max-w-4xl text-center">
-        <p className="text-sm font-semibold tracking-widest text-amber-400 uppercase">
-          The PR gate for data models
-        </p>
-        <h1 className="mt-4 text-5xl font-bold tracking-tight text-white sm:text-6xl">
-          Stop breaking dashboards you didn&apos;t know existed
+    <section className="border-b border-hairline px-4 pb-24 pt-24 text-center sm:pt-32">
+      <Reveal>
+        <h1 className="mx-auto max-w-4xl text-ink">
+          <span className="block font-serif-display text-5xl italic leading-[1.05] sm:text-7xl">
+            The blast-radius agent
+          </span>
+          <span className="mt-1 block font-display text-3xl font-extrabold tracking-[-0.03em] sm:text-6xl">
+            for data model PRs
+          </span>
         </h1>
-        <p className="mt-6 text-lg text-gray-400 max-w-2xl mx-auto">
-          Threxa reviews every data-model PR against your DataHub lineage. It names what
-          breaks, who owns it, and how to fix it, in a comment on the PR, before the merge.
+      </Reveal>
+      <Reveal delay={0.1}>
+        <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-ink-soft">
+          A renamed column merges quietly, and three days later a dashboard nobody
+          checked is wrong. Threxa reviews every data-model pull request against your
+          DataHub lineage, names what breaks and who owns it, then writes the change
+          back into the catalog.
         </p>
-        <div className="mt-8 flex items-center justify-center gap-4">
-          <Link href="/dashboard">
-            <Button size="lg">See it catch a breaking change</Button>
+      </Reveal>
+      <Reveal delay={0.18}>
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+          <Link
+            href="/dashboard"
+            className="stamp border border-ink bg-wash px-6 py-3 font-mono text-sm font-medium text-ink"
+          >
+            See it catch a breaking change
           </Link>
-          <Link href="https://github.com/mystiquemide/threxa">
-            <Button variant="outline" size="lg">View on GitHub</Button>
-          </Link>
+          <a
+            href="https://github.com/mystiquemide/threxa"
+            target="_blank"
+            rel="noreferrer"
+            className="stamp border border-ink bg-paper px-6 py-3 font-mono text-sm text-ink"
+          >
+            View the source
+          </a>
         </div>
-      </div>
+      </Reveal>
     </section>
   )
 }

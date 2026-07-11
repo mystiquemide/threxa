@@ -1,55 +1,90 @@
-import Anthropic from "@anthropic-ai/sdk"
+// LLM access via Groq's OpenAI-compatible API. All calls go through here:
+// structured output uses forced tool calling (AGENTS.md rule: no raw
+// JSON.parse on free-text completions).
 
-export const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
+const MODEL = process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile"
 
-const MODEL = "claude-sonnet-5"
+interface ChatMessage {
+  role: "system" | "user" | "assistant"
+  content: string
+}
+
+async function chat(body: Record<string, unknown>): Promise<{
+  content: string | null
+  toolArguments: string | null
+}> {
+  const res = await fetch(GROQ_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ model: MODEL, temperature: 0.2, ...body }),
+  })
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "")
+    throw new Error(`Groq API ${res.status}: ${detail.slice(0, 300)}`)
+  }
+  const json = (await res.json()) as {
+    choices: {
+      message: {
+        content: string | null
+        tool_calls?: { function: { arguments: string } }[]
+      }
+    }[]
+  }
+  const message = json.choices[0]?.message
+  return {
+    content: message?.content ?? null,
+    toolArguments: message?.tool_calls?.[0]?.function.arguments ?? null,
+  }
+}
 
 /**
- * Forced-tool-use structured output. Claude must call the single provided tool,
- * so the result is schema-shaped JSON, never free text (AGENTS.md rule).
+ * Forced-tool-call structured output: the model must call the single provided
+ * tool, so the result is schema-shaped JSON, never free text.
  */
 export async function structured<T>(opts: {
   system: string
   prompt: string
   toolName: string
   toolDescription: string
-  schema: Anthropic.Tool.InputSchema
+  schema: Record<string, unknown>
   maxTokens?: number
 }): Promise<T> {
-  const res = await anthropic.messages.create({
-    model: MODEL,
+  const { toolArguments } = await chat({
     max_tokens: opts.maxTokens ?? 4096,
-    system: opts.system,
-    messages: [{ role: "user", content: opts.prompt }],
+    messages: [
+      { role: "system", content: opts.system },
+      { role: "user", content: opts.prompt },
+    ] satisfies ChatMessage[],
     tools: [
       {
-        name: opts.toolName,
-        description: opts.toolDescription,
-        input_schema: opts.schema,
+        type: "function",
+        function: {
+          name: opts.toolName,
+          description: opts.toolDescription,
+          parameters: opts.schema,
+        },
       },
     ],
-    tool_choice: { type: "tool", name: opts.toolName },
+    tool_choice: { type: "function", function: { name: opts.toolName } },
   })
-  const block = res.content.find((b) => b.type === "tool_use")
-  if (!block || block.type !== "tool_use") {
-    throw new Error("Model did not return structured output")
-  }
-  return block.input as T
+  if (!toolArguments) throw new Error("Model did not return structured output")
+  return JSON.parse(toolArguments) as T
 }
 
 /** Plain prose completion for explanations and fix suggestions. */
 export async function prose(system: string, prompt: string): Promise<string> {
-  const res = await anthropic.messages.create({
-    model: MODEL,
+  const { content } = await chat({
     max_tokens: 1500,
-    system,
-    messages: [{ role: "user", content: prompt }],
+    messages: [
+      { role: "system", content: system },
+      { role: "user", content: prompt },
+    ] satisfies ChatMessage[],
   })
-  return res.content
-    .filter((b) => b.type === "text")
-    .map((b) => (b.type === "text" ? b.text : ""))
-    .join("\n")
-    .trim()
+  return (content ?? "").trim()
 }
 
 /** One retry with backoff for transient API failures (ADR failure path). */
