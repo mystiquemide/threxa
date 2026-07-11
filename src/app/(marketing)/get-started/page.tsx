@@ -74,7 +74,7 @@ export default function GetStartedPage() {
 
         <div className="mt-16 border-t border-hairline pt-10 text-center">
           <p className="text-ink-soft">
-            The full judge quickstart, architecture, and every ADR live in the repository.
+            The full quickstart, architecture, and every ADR live in the repository.
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
             <a

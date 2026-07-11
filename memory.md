@@ -32,7 +32,10 @@ ANTHROPIC_API_KEY, DATABASE_URL, DATAHUB_GMS_URL, DATAHUB_TOKEN, MCP_SERVER_URL,
 - PR comment upsert via `<!-- threxa -->` marker. (ADR-6)
 - No auth, public dashboard, HMAC-protected webhook only. (ADR-7)
 
-## ACTIVE WORK (design rebuild session)
+## ACTIVE WORK (polish + launch session, 2026-07-11 afternoon)
+Hostile audit fixes shipped (933fdc5): static hero paint, branded 404/error, demo fixtures matching real catalog entities, conditional external links, boilerplate purge, monogram icon.svg. Page audit shipped (d74467e): /get-started, dashboard status strip (live health dots). Professionalization: Apache 2.0 + Hackathon out of footer, "judge" wording removed sitewide + README, /docs /terms /privacy pages, LogoMark under nav wordmark. Note: Mide pushed then reverted his own favicon commit on GitHub (fe67558/a3855c2), rebase needed before push. NEXT: Railway deploy (explicitly authorized), demo repo creation, real E2E run (local app + tunnel writes to Railway Postgres so the public dashboard shows real analyses), Devpost draft in dorahacks.md, repo-audit + launch-polish + elite audit.
+
+## PREVIOUS (design rebuild session)
 DONE and pushed (c1a9381): Groq swap (smoke-tested), hex teardown doc, full landing redesign in (marketing) route group, dashboard in own dark layout, UX audit fixes (OG meta, reduced motion, aria-hidden marquee dupe, h2 eyebrows, flex-wrap). Landing verified rendering on dev :3001 (old dev server PID 38580 still on 3001, hot-reloads). Remaining blockers unchanged: demo repo push approval, railway up approval, favicon/logo asset from Mide. E2E now unblocked by Groq key.
 
 ## PREVIOUS ACTIVE WORK

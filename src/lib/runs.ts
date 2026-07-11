@@ -1,5 +1,5 @@
 // Read layer for the dashboard: real Prisma queries, or demo fixtures when
-// NEXT_PUBLIC_DEMO_MODE=true so judges can click through without a backend.
+// NEXT_PUBLIC_DEMO_MODE=true so visitors can click through without a backend.
 import { db } from "@/lib/db"
 import { demoRuns, isDemoMode } from "@/lib/demo-data"
 

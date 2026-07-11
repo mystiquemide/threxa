@@ -1,8 +1,8 @@
 // Pre-seeded runs for demo mode (NEXT_PUBLIC_DEMO_MODE=true): the dashboard
 // renders a realistic history without a database. Entities, owners, and counts
 // mirror real output from the integration run against the showcase-ecommerce
-// datapack (scripts/integration-lineage.mjs), so demo data matches what a
-// judge reproducing the flow will actually see.
+// datapack (scripts/integration-lineage.mjs), so demo data matches what
+// anyone reproducing the flow will actually see.
 export const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "true"
 
 const hoursAgo = (h: number) => new Date(Date.now() - h * 3600_000)

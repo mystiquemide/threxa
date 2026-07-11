@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { LogoMark } from "./logo"
 
 const links = [
   { href: "/#how-it-works", label: "How it works" },
@@ -23,9 +24,12 @@ export function MarketingNav() {
         </div>
         <Link
           href="/"
-          className="justify-self-center font-display text-xl font-extrabold tracking-tight text-ink"
+          className="flex flex-col items-center justify-self-center py-1"
         >
-          THREXA
+          <span className="font-display text-xl font-extrabold tracking-tight text-ink">
+            THREXA
+          </span>
+          <LogoMark className="mt-0.5 h-5 w-5" />
         </Link>
         <div className="flex items-center justify-end gap-4">
           <a

@@ -25,7 +25,7 @@ export function CTA() {
             Open the live dashboard
           </Link>
           <a
-            href="https://github.com/mystiquemide/threxa#judge-quickstart-10-minutes"
+            href="/get-started"
             target="_blank"
             rel="noreferrer"
             className="stamp border border-ink bg-paper px-6 py-3 font-mono text-sm text-ink"

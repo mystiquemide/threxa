@@ -2,12 +2,10 @@ const links = [
   { label: "GitHub", href: "https://github.com/mystiquemide/threxa" },
   { label: "Get started", href: "/get-started" },
   { label: "Live dashboard", href: "/dashboard" },
-  {
-    label: "Architecture",
-    href: "https://github.com/mystiquemide/threxa/blob/main/docs/ARCHITECTURE.md",
-  },
+  { label: "Documentation", href: "/docs" },
+  { label: "Terms", href: "/terms" },
+  { label: "Privacy", href: "/privacy" },
   { label: "DataHub", href: "https://datahub.com" },
-  { label: "Hackathon", href: "https://datahub.devpost.com" },
 ]
 
 export function MarketingFooter() {
@@ -44,7 +42,7 @@ export function MarketingFooter() {
         ))}
       </div>
       <p className="mt-6 text-center font-mono text-[11px] text-ink-soft">
-        THREXA - Apache 2.0 - built on the DataHub context graph
+        THREXA - built on the DataHub context graph
       </p>
     </footer>
   )

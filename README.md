@@ -17,7 +17,7 @@ Built for the DataHub Agent Hackathon (Metadata-Aware Code Generation & Developm
 
 A public dashboard shows run history and per-run blast radius.
 
-## Judge quickstart (~10 minutes)
+## Quickstart (~10 minutes)
 
 Prereqs: Docker, Python 3.10+, Node 20+, an Anthropic API key, a GitHub repo you can webhook.
 
