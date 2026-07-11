@@ -7,9 +7,11 @@ import { getRun } from "@/lib/runs"
 
 export const dynamic = "force-dynamic"
 
-const DATAHUB_UI = process.env.NEXT_PUBLIC_DATAHUB_UI_URL ?? "http://localhost:9002"
+// Catalog links only render when a reachable DataHub UI is configured;
+// a dead localhost link is worse than no link.
+const DATAHUB_UI = process.env.NEXT_PUBLIC_DATAHUB_UI_URL
 const catalogLink = (query: string) =>
-  `${DATAHUB_UI}/search?query=${encodeURIComponent(query)}`
+  DATAHUB_UI ? `${DATAHUB_UI}/search?query=${encodeURIComponent(query)}` : null
 
 const changeLabels: Record<string, string> = {
   COLUMN_DROPPED: "column dropped",
@@ -44,10 +46,20 @@ export default async function RunDetailPage({
           </h1>
         </div>
         <p className="mt-2 font-mono text-xs text-fog-soft">
-          {run.repo} &middot; commit {run.headSha.slice(0, 7)} &middot;{" "}
-          <a href={run.prUrl} className="underline hover:text-fog" target="_blank" rel="noreferrer">
-            view PR
-          </a>
+          {run.repo} &middot; commit {run.headSha.slice(0, 7)}
+          {run.prUrl && (
+            <>
+              {" "}&middot;{" "}
+              <a
+                href={run.prUrl}
+                className="underline hover:text-fog"
+                target="_blank"
+                rel="noreferrer"
+              >
+                view PR
+              </a>
+            </>
+          )}
           {run.commentUrl && (
             <>
               {" "}&middot;{" "}
@@ -105,14 +117,16 @@ export default async function RunDetailPage({
                     </p>
                     <p className="mt-1 font-mono text-xs text-fog-soft">{intent.detail}</p>
                     {intent.entityUrn ? (
-                      <a
-                        href={catalogLink(intent.entity)}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="mt-2 inline-block font-mono text-xs text-fog-soft underline hover:text-fog"
-                      >
-                        view in DataHub
-                      </a>
+                      catalogLink(intent.entity) && (
+                        <a
+                          href={catalogLink(intent.entity)!}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mt-2 inline-block font-mono text-xs text-fog-soft underline hover:text-fog"
+                        >
+                          view in DataHub
+                        </a>
+                      )
                     ) : (
                       <p className="mt-2 font-mono text-xs text-amberish">
                         not found in catalog; blast radius unknown
@@ -177,14 +191,18 @@ export default async function RunDetailPage({
                     .map((impact) => (
                       <tr key={impact.id} className="hover:bg-panel">
                         <td className="px-4 py-3">
-                          <a
-                            href={catalogLink(impact.name)}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-fog hover:underline"
-                          >
-                            {impact.name}
-                          </a>
+                          {catalogLink(impact.name) ? (
+                            <a
+                              href={catalogLink(impact.name)!}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-fog hover:underline"
+                            >
+                              {impact.name}
+                            </a>
+                          ) : (
+                            <span className="text-fog">{impact.name}</span>
+                          )}
                         </td>
                         <td className="px-4 py-3 font-mono text-xs text-fog-soft">
                           {impact.entityType}

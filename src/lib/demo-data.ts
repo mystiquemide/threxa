@@ -1,6 +1,8 @@
 // Pre-seeded runs for demo mode (NEXT_PUBLIC_DEMO_MODE=true): the dashboard
-// renders a realistic history without a database. Shapes mirror the Prisma
-// models used by the dashboard queries.
+// renders a realistic history without a database. Entities, owners, and counts
+// mirror real output from the integration run against the showcase-ecommerce
+// datapack (scripts/integration-lineage.mjs), so demo data matches what a
+// judge reproducing the flow will actually see.
 export const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "true"
 
 const hoursAgo = (h: number) => new Date(Date.now() - h * 3600_000)
@@ -10,59 +12,64 @@ export const demoRuns = [
     id: "demo-1",
     repo: "mystiquemide/threxa-demo-pipeline",
     prNumber: 14,
-    prTitle: "refactor: drop customer_email from fct_orders",
-    prUrl: "https://github.com/mystiquemide/threxa-demo-pipeline/pull/14",
+    prTitle: "refactor: drop cust_email from order_details",
+    prUrl: "",
     headSha: "a3f8c21",
     status: "COMPLETED",
     severity: "BREAKING",
     summary:
-      "Dropping customer_email from fct_orders breaks the Customer 360 dashboard in Looker and the churn-model feature pipeline, both of which read the column directly.",
+      "Dropping cust_email from order_details breaks eight direct consumers, including the Customer Analytics Measures in PowerBI and the ORDER_DETAILS_REPLICA table, and ripples into the datahub_order_entries dashboard two hops out.",
     suggestedFix:
-      "Deprecate first: keep customer_email as a passthrough for one release, add a dbt deprecation warning, migrate the two consumers to dim_customers.email, then drop.",
-    commentUrl: "https://github.com/mystiquemide/threxa-demo-pipeline/pull/14#issuecomment-demo",
+      "Deprecate first: keep cust_email as a passthrough for one release, migrate the eight consumers off it, then drop the column.",
+    commentUrl: null,
     wroteBack: true,
     startedAt: hoursAgo(2),
     finishedAt: hoursAgo(2),
     intents: [
       {
         id: "demo-1-i1",
-        entity: "fct_orders",
-        entityUrn: "urn:li:dataset:(urn:li:dataPlatform:dbt,showcase.fct_orders,PROD)",
-        column: "customer_email",
+        entity: "order_details",
+        entityUrn:
+          "urn:li:dataset:(urn:li:dataPlatform:snowflake,b2fd91.order_entry_db.analytics.order_details,PROD)",
+        column: "cust_email",
         changeType: "COLUMN_DROPPED",
-        detail: "SELECT list no longer includes customer_email",
+        detail: "SELECT list no longer includes cust_email",
         renamedTo: null,
       },
     ],
     impacts: [
-      { id: "demo-1-a1", sourceEntity: "fct_orders", urn: "urn:li:dashboard:(looker,customer_360)", name: "Customer 360", entityType: "dashboard", owner: "bi-team", hop: 2, viaColumn: "customer_email", severity: "BREAKING" },
-      { id: "demo-1-a2", sourceEntity: "fct_orders", urn: "urn:li:mlFeatureTable:(feast,churn_features)", name: "churn_features", entityType: "mlFeatureTable", owner: "ml-platform", hop: 1, viaColumn: "customer_email", severity: "BREAKING" },
-      { id: "demo-1-a3", sourceEntity: "fct_orders", urn: "urn:li:dataset:(urn:li:dataPlatform:snowflake,showcase.rpt_daily_orders,PROD)", name: "rpt_daily_orders", entityType: "dataset", owner: "analytics", hop: 1, viaColumn: null, severity: "RISKY" },
+      { id: "demo-1-a1", sourceEntity: "order_details", urn: "urn:li:dataset:(powerbi,customer_analytics_measures)", name: "Customer Analytics Measures", entityType: "dataset", owner: "Karen Okonkwo", hop: 1, viaColumn: "cust_email", severity: "BREAKING" },
+      { id: "demo-1-a2", sourceEntity: "order_details", urn: "urn:li:dataset:(snowflake,order_details_replica)", name: "ORDER_DETAILS_REPLICA", entityType: "dataset", owner: "Fiona Green", hop: 1, viaColumn: "cust_email", severity: "BREAKING" },
+      { id: "demo-1-a3", sourceEntity: "order_details", urn: "urn:li:dataset:(powerbi,essential_kpi_measures)", name: "Essential KPI Measures", entityType: "dataset", owner: "Karen Okonkwo", hop: 1, viaColumn: "cust_email", severity: "BREAKING" },
+      { id: "demo-1-a4", sourceEntity: "order_details", urn: "urn:li:dataset:(snowflake,order_history)", name: "ORDER_HISTORY", entityType: "dataset", owner: "Data Platform Team", hop: 1, viaColumn: null, severity: "RISKY" },
+      { id: "demo-1-a5", sourceEntity: "order_details", urn: "urn:li:dashboard:(powerbi,datahub_order_entries)", name: "datahub_order_entries", entityType: "dashboard", owner: "Sarah Chen", hop: 2, viaColumn: null, severity: "RISKY" },
     ],
   },
   {
     id: "demo-2",
     repo: "mystiquemide/threxa-demo-pipeline",
     prNumber: 13,
-    prTitle: "feat: add margin_pct to fct_orders",
-    prUrl: "https://github.com/mystiquemide/threxa-demo-pipeline/pull/13",
+    prTitle: "feat: add is_express_delivery flag to order_details",
+    prUrl: "",
     headSha: "b7e1d09",
     status: "COMPLETED",
     severity: "SAFE",
-    summary: "Adding margin_pct is additive; no downstream asset reads a column that changes.",
+    summary:
+      "Adding is_express_delivery is additive; no downstream asset reads a column that changed shape.",
     suggestedFix: "None needed. Document the new column in the model YAML.",
-    commentUrl: "https://github.com/mystiquemide/threxa-demo-pipeline/pull/13#issuecomment-demo",
+    commentUrl: null,
     wroteBack: true,
     startedAt: hoursAgo(26),
     finishedAt: hoursAgo(26),
     intents: [
       {
         id: "demo-2-i1",
-        entity: "fct_orders",
-        entityUrn: "urn:li:dataset:(urn:li:dataPlatform:dbt,showcase.fct_orders,PROD)",
-        column: "margin_pct",
+        entity: "order_details",
+        entityUrn:
+          "urn:li:dataset:(urn:li:dataPlatform:snowflake,b2fd91.order_entry_db.analytics.order_details,PROD)",
+        column: "is_express_delivery",
         changeType: "COLUMN_ADDED",
-        detail: "New computed column margin_pct added to SELECT list",
+        detail: "New computed column is_express_delivery added to SELECT list",
         renamedTo: null,
       },
     ],
@@ -72,31 +79,33 @@ export const demoRuns = [
     id: "demo-3",
     repo: "mystiquemide/threxa-demo-pipeline",
     prNumber: 12,
-    prTitle: "fix: rename order_ts to ordered_at in stg_orders",
-    prUrl: "https://github.com/mystiquemide/threxa-demo-pipeline/pull/12",
+    prTitle: "fix: only completed orders in last 2 years in order_history",
+    prUrl: "",
     headSha: "c4a9f77",
     status: "COMPLETED",
     severity: "RISKY",
     summary:
-      "Renaming order_ts changes the staging contract. Direct consumer fct_orders selects it explicitly; the rename ripples into three downstream marts unless aliased.",
-    suggestedFix: "Alias the old name during transition: SELECT ordered_at AS order_ts until fct_orders is migrated.",
-    commentUrl: "https://github.com/mystiquemide/threxa-demo-pipeline/pull/12#issuecomment-demo",
+      "No columns change shape, but the filter feeding order_history changes what rows exist. Its direct upstream consumers keep working while silently reading different data.",
+    suggestedFix:
+      "Coordinate with the owners of the downstream marts before merge, and backfill or annotate the affected reporting windows.",
+    commentUrl: null,
     wroteBack: true,
     startedAt: hoursAgo(50),
     finishedAt: hoursAgo(50),
     intents: [
       {
         id: "demo-3-i1",
-        entity: "stg_orders",
-        entityUrn: "urn:li:dataset:(urn:li:dataPlatform:dbt,showcase.stg_orders,PROD)",
-        column: "order_ts",
-        changeType: "COLUMN_RENAMED",
-        detail: "Column order_ts renamed",
-        renamedTo: "ordered_at",
+        entity: "order_history",
+        entityUrn:
+          "urn:li:dataset:(urn:li:dataPlatform:snowflake,b2fd91.order_entry_db.analytics.order_history,PROD)",
+        column: null,
+        changeType: "LOGIC_CHANGED",
+        detail: "WHERE clause now excludes cancelled orders older than two years",
+        renamedTo: null,
       },
     ],
     impacts: [
-      { id: "demo-3-a1", sourceEntity: "stg_orders", urn: "urn:li:dataset:(urn:li:dataPlatform:dbt,showcase.fct_orders,PROD)", name: "fct_orders", entityType: "dataset", owner: "data-eng", hop: 1, viaColumn: null, severity: "RISKY" },
+      { id: "demo-3-a1", sourceEntity: "order_history", urn: "urn:li:dataset:(powerbi,time_intelligence_measures)", name: "Time Intelligence Measures", entityType: "dataset", owner: "Karen Okonkwo", hop: 1, viaColumn: null, severity: "RISKY" },
     ],
   },
 ]

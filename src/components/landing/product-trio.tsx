@@ -24,7 +24,7 @@ function VerdictComment() {
           1 change detected, 22 downstream assets in the blast radius.
         </p>
         <div className="border border-hairline">
-          <div className="grid grid-cols-4 gap-2 border-b border-hairline bg-paper px-2 py-1 text-ink-soft">
+          <div className="grid grid-cols-[1.6fr_0.9fr_0.4fr_1fr] gap-2 border-b border-hairline bg-paper px-2 py-1 text-ink-soft">
             <span>asset</span>
             <span>owner</span>
             <span>hop</span>
@@ -35,9 +35,14 @@ function VerdictComment() {
             ["ORDER_DETAILS_REPLICA", "Fiona G.", "1", "cust_email"],
             ["datahub_order_entries", "Sarah C.", "2", "-"],
           ].map((r) => (
-            <div key={r[0]} className="grid grid-cols-4 gap-2 border-b border-hairline px-2 py-1 last:border-0 text-ink">
+            <div
+              key={r[0]}
+              className="grid grid-cols-[1.6fr_0.9fr_0.4fr_1fr] gap-2 border-b border-hairline px-2 py-1 last:border-0 text-ink"
+            >
               {r.map((c, i) => (
-                <span key={i}>{c}</span>
+                <span key={i} className="truncate">
+                  {c}
+                </span>
               ))}
             </div>
           ))}

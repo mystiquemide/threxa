@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import { Archivo, IBM_Plex_Mono, Instrument_Serif } from "next/font/google"
 import "./globals.css"
-import { ToastProvider } from "@/components/ui/toast"
 
 const archivo = Archivo({ variable: "--font-archivo", subsets: ["latin"] })
 const plexMono = IBM_Plex_Mono({
@@ -41,9 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       className={`${archivo.variable} ${plexMono.variable} ${instrument.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        <ToastProvider>{children}</ToastProvider>
-      </body>
+      <body className="min-h-full flex flex-col">{children}</body>
     </html>
   )
 }
