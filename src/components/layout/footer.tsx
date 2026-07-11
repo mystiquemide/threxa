@@ -1,13 +1,15 @@
 export function Footer() {
   return (
-    <footer className="border-t border-gray-800 py-8">
-      <div className="mx-auto max-w-6xl px-4 text-center text-sm text-gray-500">
-        Threxa - the blast-radius agent for data model PRs -{" "}
+    <footer className="border-t border-fogline py-6">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 font-mono text-xs text-fog-soft">
+        <span>threxa - blast-radius agent for data model PRs</span>
         <a
           href="https://github.com/mystiquemide/threxa"
-          className="underline hover:text-gray-300"
+          className="hover:text-fog"
+          target="_blank"
+          rel="noreferrer"
         >
-          source
+          github.com/mystiquemide/threxa
         </a>
       </div>
     </footer>

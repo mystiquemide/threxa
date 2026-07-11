@@ -7,18 +7,17 @@ import { getRun } from "@/lib/runs"
 
 export const dynamic = "force-dynamic"
 
-// Public DataHub UI for judge click-through; search links work for every entity type.
 const DATAHUB_UI = process.env.NEXT_PUBLIC_DATAHUB_UI_URL ?? "http://localhost:9002"
 const catalogLink = (query: string) =>
   `${DATAHUB_UI}/search?query=${encodeURIComponent(query)}`
 
 const changeLabels: Record<string, string> = {
-  COLUMN_DROPPED: "Column dropped",
-  COLUMN_RENAMED: "Column renamed",
-  COLUMN_ADDED: "Column added",
-  TYPE_CHANGED: "Type changed",
-  LOGIC_CHANGED: "Logic changed",
-  ENTITY_DROPPED: "Entity dropped",
+  COLUMN_DROPPED: "column dropped",
+  COLUMN_RENAMED: "column renamed",
+  COLUMN_ADDED: "column added",
+  TYPE_CHANGED: "type changed",
+  LOGIC_CHANGED: "logic changed",
+  ENTITY_DROPPED: "entity dropped",
 }
 
 export default async function RunDetailPage({
@@ -31,28 +30,33 @@ export default async function RunDetailPage({
   if (!run) notFound()
 
   return (
-    <div className="pt-24 pb-16 px-4">
+    <div className="px-4 py-10">
       <div className="mx-auto max-w-6xl">
         <DemoBanner />
-        <Link href="/dashboard" className="text-sm text-gray-500 hover:text-gray-300">
-          &larr; All runs
+        <Link href="/dashboard" className="font-mono text-xs text-fog-soft hover:text-fog">
+          &larr; all runs
         </Link>
 
         <div className="mt-4 flex flex-wrap items-center gap-4">
-          <SeverityBadge value={run.severity ?? run.status} className="text-sm px-3 py-1" />
-          <h1 className="text-2xl font-bold text-white">
+          <SeverityBadge value={run.severity ?? run.status} className="px-3 py-1 text-sm" />
+          <h1 className="font-display text-2xl font-extrabold tracking-tight text-fog">
             #{run.prNumber} {run.prTitle}
           </h1>
         </div>
-        <p className="mt-2 text-gray-400">
+        <p className="mt-2 font-mono text-xs text-fog-soft">
           {run.repo} &middot; commit {run.headSha.slice(0, 7)} &middot;{" "}
-          <a href={run.prUrl} className="text-gray-300 underline hover:text-white" target="_blank" rel="noreferrer">
+          <a href={run.prUrl} className="underline hover:text-fog" target="_blank" rel="noreferrer">
             view PR
           </a>
           {run.commentUrl && (
             <>
               {" "}&middot;{" "}
-              <a href={run.commentUrl} className="text-gray-300 underline hover:text-white" target="_blank" rel="noreferrer">
+              <a
+                href={run.commentUrl}
+                className="underline hover:text-fog"
+                target="_blank"
+                rel="noreferrer"
+              >
                 verdict comment
               </a>
             </>
@@ -61,11 +65,11 @@ export default async function RunDetailPage({
         </p>
 
         {run.status === "FAILED" && (
-          <Card className="mt-8 border-red-500/30">
+          <Card className="mt-8 border-ember/40">
             <CardHeader className="mb-0">
               <CardTitle>Analysis failed</CardTitle>
               <CardDescription>
-                This run did not complete. The PR was told to treat the change as unreviewed.
+                this run did not complete. the PR was told to treat the change as unreviewed.
               </CardDescription>
             </CardHeader>
           </Card>
@@ -73,40 +77,45 @@ export default async function RunDetailPage({
 
         <div className="mt-10 grid gap-8 lg:grid-cols-2">
           <section>
-            <h2 className="text-lg font-semibold text-white">Detected changes</h2>
+            <h2 className="font-mono text-xs uppercase tracking-[0.22em] text-fog-soft">
+              detected changes
+            </h2>
             <div className="mt-4 space-y-3">
               {run.intents.length === 0 ? (
-                <p className="text-sm text-gray-400">No structured changes extracted.</p>
+                <p className="font-mono text-xs text-fog-soft">
+                  no structured changes extracted
+                </p>
               ) : (
                 run.intents.map((intent) => (
                   <Card key={intent.id} className="p-4">
-                    <p className="text-sm text-white font-medium">
+                    <p className="text-sm font-medium text-fog">
                       {changeLabels[intent.changeType] ?? intent.changeType}
                       {intent.column && (
                         <>
-                          : <code className="text-amber-300">{intent.column}</code>
+                          : <code className="font-mono text-amberish">{intent.column}</code>
                           {intent.renamedTo && (
                             <>
-                              {" "}&rarr; <code className="text-amber-300">{intent.renamedTo}</code>
+                              {" "}&rarr;{" "}
+                              <code className="font-mono text-amberish">{intent.renamedTo}</code>
                             </>
                           )}
                         </>
                       )}{" "}
-                      on <code className="text-sky-300">{intent.entity}</code>
+                      on <code className="font-mono text-sage">{intent.entity}</code>
                     </p>
-                    <p className="mt-1 text-sm text-gray-400">{intent.detail}</p>
+                    <p className="mt-1 font-mono text-xs text-fog-soft">{intent.detail}</p>
                     {intent.entityUrn ? (
                       <a
                         href={catalogLink(intent.entity)}
                         target="_blank"
                         rel="noreferrer"
-                        className="mt-1 inline-block text-xs text-gray-500 underline hover:text-gray-300"
+                        className="mt-2 inline-block font-mono text-xs text-fog-soft underline hover:text-fog"
                       >
-                        View in DataHub
+                        view in DataHub
                       </a>
                     ) : (
-                      <p className="mt-1 text-xs text-amber-400">
-                        Not found in catalog; blast radius unknown.
+                      <p className="mt-2 font-mono text-xs text-amberish">
+                        not found in catalog; blast radius unknown
                       </p>
                     )}
                   </Card>
@@ -116,17 +125,25 @@ export default async function RunDetailPage({
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-white">Verdict</h2>
+            <h2 className="font-mono text-xs uppercase tracking-[0.22em] text-fog-soft">
+              verdict
+            </h2>
             <Card className="mt-4 p-4">
               {run.summary ? (
-                <p className="text-sm text-gray-300 whitespace-pre-line">{run.summary}</p>
+                <p className="text-sm leading-relaxed whitespace-pre-line text-fog">
+                  {run.summary}
+                </p>
               ) : (
-                <p className="text-sm text-gray-400">No summary recorded.</p>
+                <p className="font-mono text-xs text-fog-soft">no summary recorded</p>
               )}
               {run.suggestedFix && (
                 <>
-                  <p className="mt-4 text-sm font-semibold text-white">Suggested fix</p>
-                  <p className="mt-1 text-sm text-gray-300 whitespace-pre-line">{run.suggestedFix}</p>
+                  <p className="mt-4 font-mono text-xs uppercase tracking-[0.22em] text-fog-soft">
+                    suggested fix
+                  </p>
+                  <p className="mt-1 text-sm leading-relaxed whitespace-pre-line text-fog">
+                    {run.suggestedFix}
+                  </p>
                 </>
               )}
             </Card>
@@ -134,49 +151,55 @@ export default async function RunDetailPage({
         </div>
 
         <section className="mt-10">
-          <h2 className="text-lg font-semibold text-white">
-            Blast radius ({run.impacts.length} downstream asset{run.impacts.length === 1 ? "" : "s"})
+          <h2 className="font-mono text-xs uppercase tracking-[0.22em] text-fog-soft">
+            blast radius ({run.impacts.length} downstream asset{run.impacts.length === 1 ? "" : "s"})
           </h2>
-          <div className="mt-4 overflow-x-auto rounded-xl border border-gray-800">
+          <div className="mt-4 overflow-x-auto border border-fogline">
             {run.impacts.length === 0 ? (
-              <p className="p-6 text-sm text-gray-400">
-                No downstream consumers found in the catalog for the touched entities.
+              <p className="bg-panel p-6 font-mono text-xs text-fog-soft">
+                no downstream consumers found in the catalog for the touched entities
               </p>
             ) : (
               <table className="w-full text-left text-sm">
-                <thead className="border-b border-gray-800 bg-gray-900/50 text-gray-400">
+                <thead className="border-b border-fogline bg-panel font-mono text-xs text-fog-soft">
                   <tr>
-                    <th className="px-4 py-3 font-medium">Asset</th>
-                    <th className="px-4 py-3 font-medium">Type</th>
-                    <th className="px-4 py-3 font-medium">Owner</th>
-                    <th className="px-4 py-3 font-medium">Hop</th>
-                    <th className="px-4 py-3 font-medium">Via column</th>
-                    <th className="px-4 py-3 font-medium">Severity</th>
+                    <th className="px-4 py-3 font-medium">asset</th>
+                    <th className="px-4 py-3 font-medium">type</th>
+                    <th className="px-4 py-3 font-medium">owner</th>
+                    <th className="px-4 py-3 font-medium">hop</th>
+                    <th className="px-4 py-3 font-medium">via column</th>
+                    <th className="px-4 py-3 font-medium">severity</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-800">
+                <tbody className="divide-y divide-fogline">
                   {[...run.impacts]
                     .sort((a, b) => a.hop - b.hop)
                     .map((impact) => (
-                      <tr key={impact.id}>
+                      <tr key={impact.id} className="hover:bg-panel">
                         <td className="px-4 py-3">
                           <a
                             href={catalogLink(impact.name)}
                             target="_blank"
                             rel="noreferrer"
-                            className="text-white hover:underline"
+                            className="text-fog hover:underline"
                           >
                             {impact.name}
                           </a>
                         </td>
-                        <td className="px-4 py-3 text-gray-400">{impact.entityType}</td>
-                        <td className="px-4 py-3 text-gray-400">{impact.owner ?? "unknown"}</td>
-                        <td className="px-4 py-3 text-gray-400">{impact.hop}</td>
+                        <td className="px-4 py-3 font-mono text-xs text-fog-soft">
+                          {impact.entityType}
+                        </td>
+                        <td className="px-4 py-3 font-mono text-xs text-fog-soft">
+                          {impact.owner ?? "unknown"}
+                        </td>
+                        <td className="px-4 py-3 font-mono text-xs text-fog-soft">{impact.hop}</td>
                         <td className="px-4 py-3">
                           {impact.viaColumn ? (
-                            <code className="text-amber-300">{impact.viaColumn}</code>
+                            <code className="font-mono text-xs text-amberish">
+                              {impact.viaColumn}
+                            </code>
                           ) : (
-                            <span className="text-gray-600">-</span>
+                            <span className="text-fog-soft">-</span>
                           )}
                         </td>
                         <td className="px-4 py-3">

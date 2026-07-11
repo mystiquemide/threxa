@@ -7,6 +7,15 @@
   --color-wash: #f9e8e8;
   --color-coral: #c96b6e;
   --color-hairline: rgba(20, 20, 28, 0.14);
+  /* dark app theme (dev mode) */
+  --color-night: #0e0e15;
+  --color-panel: #14141c;
+  --color-fog: rgba(245, 243, 239, 0.82);
+  --color-fog-soft: rgba(245, 243, 239, 0.55);
+  --color-fogline: rgba(245, 243, 239, 0.14);
+  --color-ember: #e58f92;
+  --color-amberish: #e5b567;
+  --color-sage: #86c28d;
   --font-display: var(--font-archivo);
   --font-serif-display: var(--font-instrument);
   --font-sans: var(--font-archivo);
@@ -20,6 +29,22 @@ body {
 .dot-grid {
   background-image: radial-gradient(rgba(20, 20, 28, 0.13) 1px, transparent 1px);
   background-size: 14px 14px;
+}
+
+.dot-grid-dark {
+  background-image: radial-gradient(rgba(245, 243, 239, 0.07) 1px, transparent 1px);
+  background-size: 14px 14px;
+}
+
+.stamp-dark {
+  box-shadow: 3px 3px 0 0 rgba(245, 243, 239, 0.25);
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
+}
+.stamp-dark:hover {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 0 rgba(245, 243, 239, 0.25);
 }
 
 .eyebrow-ticks::before {

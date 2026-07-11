@@ -11,82 +11,86 @@ export default async function DashboardPage() {
 
   const completed = runs.filter((r) => r.status === "COMPLETED")
   const stats = [
-    { title: "Analyzed PRs", value: runs.length },
-    { title: "Breaking caught", value: completed.filter((r) => r.severity === "BREAKING").length },
-    { title: "Risky flagged", value: completed.filter((r) => r.severity === "RISKY").length },
-    { title: "Safe passed", value: completed.filter((r) => r.severity === "SAFE").length },
+    { title: "analyzed_prs", value: runs.length },
+    { title: "breaking_caught", value: completed.filter((r) => r.severity === "BREAKING").length },
+    { title: "risky_flagged", value: completed.filter((r) => r.severity === "RISKY").length },
+    { title: "safe_passed", value: completed.filter((r) => r.severity === "SAFE").length },
   ]
   const guardedRepos = [...new Set(runs.map((r) => r.repo))]
 
   return (
-    <div className="pt-24 pb-16 px-4">
+    <div className="px-4 py-10">
       <div className="mx-auto max-w-6xl">
         <DemoBanner />
-        <h1 className="text-2xl font-bold text-white">Run history</h1>
-        <p className="mt-2 text-gray-400">
-          Every data-model PR Threxa analyzed, with its blast-radius verdict.
+        <div className="flex items-baseline justify-between">
+          <h1 className="font-display text-2xl font-extrabold tracking-tight text-fog">
+            Run history
+          </h1>
+          <span className="font-mono text-xs text-fog-soft">
+            $ threxa watch --all
+          </span>
+        </div>
+        <p className="mt-2 font-mono text-sm text-fog-soft">
+          every data-model PR analyzed, with its blast-radius verdict
         </p>
 
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-8 grid gap-px border border-fogline bg-fogline sm:grid-cols-2 lg:grid-cols-4">
           {stats.map((stat) => (
-            <Card key={stat.title}>
+            <Card key={stat.title} className="border-0">
               <CardHeader className="mb-0">
                 <CardDescription>{stat.title}</CardDescription>
-                <CardTitle className="text-3xl">{stat.value}</CardTitle>
+                <CardTitle className="font-display text-3xl">{stat.value}</CardTitle>
               </CardHeader>
             </Card>
           ))}
         </div>
 
-        <div className="mt-10 flex flex-wrap items-center gap-2">
-          <span className="text-sm text-gray-500">Guarded repos:</span>
+        <div className="mt-8 flex flex-wrap items-center gap-2 font-mono text-xs">
+          <span className="text-fog-soft">guarded repos:</span>
           {guardedRepos.length === 0 ? (
-            <span className="text-sm text-gray-400">none yet</span>
+            <span className="text-fog-soft">none yet</span>
           ) : (
             guardedRepos.map((repo) => (
-              <span
-                key={repo}
-                className="rounded-full border border-gray-800 bg-gray-900/50 px-3 py-1 text-xs text-gray-300"
-              >
+              <span key={repo} className="border border-fogline bg-panel px-3 py-1 text-fog">
                 {repo}
               </span>
             ))
           )}
         </div>
 
-        <div className="mt-6 overflow-x-auto rounded-xl border border-gray-800">
+        <div className="mt-6 overflow-x-auto border border-fogline">
           {runs.length === 0 ? (
-            <div className="p-12 text-center text-gray-400">
-              <p className="text-white font-medium">No runs yet</p>
-              <p className="mt-2 text-sm">
-                Install the Threxa webhook on a repo and open a PR that touches a SQL or dbt
-                model file. The analysis lands here within a minute.
+            <div className="bg-panel p-12 text-center">
+              <p className="font-display font-semibold text-fog">No runs yet</p>
+              <p className="mt-2 font-mono text-xs leading-relaxed text-fog-soft">
+                install the threxa webhook on a repo and open a PR that touches a SQL or
+                dbt model file. the analysis lands here within a minute.
               </p>
             </div>
           ) : (
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-gray-800 bg-gray-900/50 text-gray-400">
+              <thead className="border-b border-fogline bg-panel font-mono text-xs text-fog-soft">
                 <tr>
-                  <th className="px-4 py-3 font-medium">Verdict</th>
-                  <th className="px-4 py-3 font-medium">Pull request</th>
-                  <th className="px-4 py-3 font-medium">Repo</th>
-                  <th className="px-4 py-3 font-medium">When</th>
-                  <th className="px-4 py-3 font-medium sr-only">Detail</th>
+                  <th className="px-4 py-3 font-medium">verdict</th>
+                  <th className="px-4 py-3 font-medium">pull request</th>
+                  <th className="px-4 py-3 font-medium">repo</th>
+                  <th className="px-4 py-3 font-medium">when</th>
+                  <th className="px-4 py-3 font-medium sr-only">detail</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-800">
+              <tbody className="divide-y divide-fogline">
                 {runs.map((run) => (
-                  <tr key={run.id} className="hover:bg-gray-900/40">
+                  <tr key={run.id} className="hover:bg-panel">
                     <td className="px-4 py-3">
                       <SeverityBadge value={run.severity ?? run.status} />
                     </td>
                     <td className="px-4 py-3">
-                      <Link href={`/dashboard/runs/${run.id}`} className="text-white hover:underline">
+                      <Link href={`/dashboard/runs/${run.id}`} className="text-fog hover:underline">
                         #{run.prNumber} {run.prTitle}
                       </Link>
                     </td>
-                    <td className="px-4 py-3 text-gray-400">{run.repo}</td>
-                    <td className="px-4 py-3 text-gray-400 whitespace-nowrap">
+                    <td className="px-4 py-3 font-mono text-xs text-fog-soft">{run.repo}</td>
+                    <td className="px-4 py-3 font-mono text-xs whitespace-nowrap text-fog-soft">
                       {new Date(run.startedAt).toLocaleString("en-US", {
                         month: "short",
                         day: "numeric",
@@ -97,9 +101,9 @@ export default async function DashboardPage() {
                     <td className="px-4 py-3">
                       <Link
                         href={`/dashboard/runs/${run.id}`}
-                        className="text-xs text-gray-500 hover:text-gray-300"
+                        className="font-mono text-xs text-fog-soft hover:text-fog"
                       >
-                        Blast radius
+                        blast radius &rarr;
                       </Link>
                     </td>
                   </tr>
