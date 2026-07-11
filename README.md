@@ -30,8 +30,8 @@ datahub datapack load showcase-ecommerce
 
 # 2. The official DataHub MCP server
 pip install mcp-server-datahub
-DATAHUB_GMS_URL=http://localhost:8080 DATAHUB_GMS_TOKEN=<token> \
-  mcp-server-datahub --transport streamable-http --port 8000
+DATAHUB_GMS_URL=http://localhost:8080 mcp-server-datahub --transport http
+# serves http://localhost:8000/mcp; add DATAHUB_GMS_TOKEN if your instance has auth
 
 # 3. Threxa
 git clone https://github.com/mystiquemide/threxa && cd threxa

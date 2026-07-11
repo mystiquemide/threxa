@@ -11,4 +11,6 @@ RUN pip install --no-cache-dir mcp-server-datahub
 ENV FASTMCP_HOST=0.0.0.0
 EXPOSE 8000
 
-CMD ["sh", "-c", "mcp-server-datahub --transport streamable-http --port ${PORT:-8000}"]
+# Verified against mcp-server-datahub 0.6.0: transports are stdio | sse | http
+# ("http" is streamable HTTP under the hood, serves /mcp on port 8000).
+CMD ["sh", "-c", "mcp-server-datahub --transport http"]

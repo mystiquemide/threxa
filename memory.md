@@ -44,6 +44,9 @@ DataHub plan final: local WSL2 quickstart (the hackathon's sanctioned path; no D
 - Phase 3 backend complete: ai.ts (structured/prose/withRetry), github.ts (HMAC verify, PR files, comment upsert, commit status), datahub.ts (GraphQL write-back + incidents), pipeline (gate, parse, lineage via MCP streamable HTTP, deterministic score, comment, writeback, persist, orchestrator), routes /api/webhooks/github, /api/runs, /api/runs/[id], /api/health. Build green. Smoke-tested live: /api/health db:true, unsigned webhook 401, signed webhook with unhandled action returns skipped (2026-07-11)
 
 ## BUGS / GOTCHAS
+- WSL2 VM died twice under DataHub quickstart memory spikes (all containers Exited 255, uptime reset). Fixed with C:\Users\Prince\.wslconfig: memory=12GB, swap=8GB. Avoid heavy Windows-side builds while the stack boots.
+- .gitignore `.env*` also ignored .env.example; fixed with `!.env.example`.
+- Repo live at github.com/mystiquemide/threxa. All commits use Co-Authored-By: MystiqueMide <splashmediahub@gmail.com>, never the Claude default trailer (explicit instruction).
 - Prisma 7: no `url` in schema datasource. URL lives in prisma.config.ts (needs `import "dotenv/config"`, Prisma no longer auto-loads .env). Client needs PrismaPg adapter from @prisma/adapter-pg.
 - No Docker and no Postgres on this machine. DataHub quickstart can't run locally.
 - Never emit SAFE when lineage lookup fails — floor is RISKY/FAILED.
