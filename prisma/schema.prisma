@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum RunStatus {
+  RUNNING
+  COMPLETED
+  FAILED
+  SKIPPED
+}
+
+enum Severity {
+  SAFE
+  RISKY
+  BREAKING
+}
+
+enum ChangeType {
+  COLUMN_DROPPED
+  COLUMN_RENAMED
+  COLUMN_ADDED
+  TYPE_CHANGED
+  LOGIC_CHANGED
+  ENTITY_DROPPED
+}
+
+model Repo {
+  id        String   @id @default(cuid())
+  owner     String
+  name      String
+  runs      Run[]
+  createdAt DateTime @default(now())
+
+  @@unique([owner, name])
+}
+
+model Run {
+  id           String          @id @default(cuid())
+  repo         Repo            @relation(fields: [repoId], references: [id])
+  repoId       String
+  prNumber     Int
+  prTitle      String
+  prUrl        String
+  headSha      String
+  status       RunStatus       @default(RUNNING)
+  severity     Severity?
+  summary      String?
+  suggestedFix String?
+  commentUrl   String?
+  error        String?
+  wroteBack    Boolean         @default(false)
+  incidentUrns String[]
+  intents      ChangeIntent[]
+  impacts      ImpactedAsset[]
+  startedAt    DateTime        @default(now())
+  finishedAt   DateTime?
+
+  @@index([repoId, prNumber])
+}
+
+model ChangeIntent {
+  id         String     @id @default(cuid())
+  run        Run        @relation(fields: [runId], references: [id], onDelete: Cascade)
+  runId      String
+  entity     String
+  entityUrn  String?
+  column     String?
+  changeType ChangeType
+  detail     String
+  renamedTo  String?
+}
+
+model ImpactedAsset {
+  id           String   @id @default(cuid())
+  run          Run      @relation(fields: [runId], references: [id], onDelete: Cascade)
+  runId        String
+  urn          String
+  name         String
+  entityType   String
+  owner        String?
+  hop          Int
+  viaColumn    String?
+  sourceEntity String
+  severity     Severity
+}
