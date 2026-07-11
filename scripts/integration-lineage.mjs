@@ -1,9 +1,5 @@
 // Task 2 acceptance: run the real pipeline lineage stage against the live
 // DataHub + MCP server. Simulates a PR dropping cust_email from order_details.
-import { register } from "node:module"
-import { pathToFileURL } from "node:url"
-
-process.env.NODE_OPTIONS ??= ""
 const { computeLineage } = await import(
   "../src/lib/pipeline/lineage.ts"
 )

@@ -52,3 +52,5 @@ next-env.d.ts
 
 # AI cache
 .anthropic/
+.prod-webhook-secret
+memory.md

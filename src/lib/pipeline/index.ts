@@ -4,13 +4,7 @@ import { buildComment, failureComment } from "./comment"
 import { dataFiles } from "./gate"
 import { computeLineage } from "./lineage"
 import { parseChanges } from "./parse"
-import {
-  createRun,
-  latestRunForPr,
-  markFailed,
-  saveIncidents,
-  saveResults,
-} from "./persist"
+import { latestRunForPr, markFailed, saveIncidents, saveResults } from "./persist"
 import { score } from "./score"
 import { raiseIncidentsForMerge, writeChangeRecords } from "./writeback"
 
