@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" fill="#14141c"/>
-  <circle cx="14" cy="14" r="3" fill="#c96b6e"/>
-  <path d="M14 14 Q 32 20 32 34" stroke="#f5f3ef" stroke-width="2" fill="none" opacity="0.5"/>
-  <path d="M50 14 Q 32 20 32 34" stroke="#f5f3ef" stroke-width="2" fill="none" opacity="0.5"/>
-  <circle cx="50" cy="14" r="3" fill="#c96b6e"/>
-  <text x="32" y="52" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="26" font-weight="900" fill="#f5f3ef">T</text>
-</svg>
