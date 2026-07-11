@@ -7,6 +7,11 @@ import { getRun } from "@/lib/runs"
 
 export const dynamic = "force-dynamic"
 
+// Public DataHub UI for judge click-through; search links work for every entity type.
+const DATAHUB_UI = process.env.NEXT_PUBLIC_DATAHUB_UI_URL ?? "http://localhost:9002"
+const catalogLink = (query: string) =>
+  `${DATAHUB_UI}/search?query=${encodeURIComponent(query)}`
+
 const changeLabels: Record<string, string> = {
   COLUMN_DROPPED: "Column dropped",
   COLUMN_RENAMED: "Column renamed",
@@ -90,7 +95,16 @@ export default async function RunDetailPage({
                       on <code className="text-sky-300">{intent.entity}</code>
                     </p>
                     <p className="mt-1 text-sm text-gray-400">{intent.detail}</p>
-                    {!intent.entityUrn && (
+                    {intent.entityUrn ? (
+                      <a
+                        href={catalogLink(intent.entity)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-1 inline-block text-xs text-gray-500 underline hover:text-gray-300"
+                      >
+                        View in DataHub
+                      </a>
+                    ) : (
                       <p className="mt-1 text-xs text-amber-400">
                         Not found in catalog; blast radius unknown.
                       </p>
@@ -145,7 +159,16 @@ export default async function RunDetailPage({
                     .sort((a, b) => a.hop - b.hop)
                     .map((impact) => (
                       <tr key={impact.id}>
-                        <td className="px-4 py-3 text-white">{impact.name}</td>
+                        <td className="px-4 py-3">
+                          <a
+                            href={catalogLink(impact.name)}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-white hover:underline"
+                          >
+                            {impact.name}
+                          </a>
+                        </td>
                         <td className="px-4 py-3 text-gray-400">{impact.entityType}</td>
                         <td className="px-4 py-3 text-gray-400">{impact.owner ?? "unknown"}</td>
                         <td className="px-4 py-3 text-gray-400">{impact.hop}</td>
