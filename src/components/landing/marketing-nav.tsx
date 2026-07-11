@@ -1,9 +1,9 @@
 import Link from "next/link"
 
 const links = [
-  { href: "#how-it-works", label: "How it works" },
-  { href: "#blast-radius", label: "Blast radius" },
-  { href: "#stack", label: "Stack" },
+  { href: "/#how-it-works", label: "How it works" },
+  { href: "/#blast-radius", label: "Blast radius" },
+  { href: "/get-started", label: "Get started" },
 ]
 
 export function MarketingNav() {

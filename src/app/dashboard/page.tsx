@@ -2,6 +2,7 @@ import Link from "next/link"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { SeverityBadge } from "@/components/dashboard/severity-badge"
 import { DemoBanner } from "@/components/dashboard/demo-banner"
+import { StatusStrip } from "@/components/dashboard/status-strip"
 import { listRuns } from "@/lib/runs"
 
 export const dynamic = "force-dynamic"
@@ -30,9 +31,12 @@ export default async function DashboardPage() {
             $ threxa watch --all
           </span>
         </div>
-        <p className="mt-2 font-mono text-sm text-fog-soft">
-          every data-model PR analyzed, with its blast-radius verdict
-        </p>
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
+          <p className="font-mono text-sm text-fog-soft">
+            every data-model PR analyzed, with its blast-radius verdict
+          </p>
+          <StatusStrip />
+        </div>
 
         <div className="mt-8 grid gap-px border border-fogline bg-fogline sm:grid-cols-2 lg:grid-cols-4">
           {stats.map((stat) => (

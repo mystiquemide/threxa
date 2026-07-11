@@ -1,5 +1,6 @@
 const links = [
   { label: "GitHub", href: "https://github.com/mystiquemide/threxa" },
+  { label: "Get started", href: "/get-started" },
   { label: "Live dashboard", href: "/dashboard" },
   {
     label: "Architecture",
